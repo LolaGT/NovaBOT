@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tableau de Bord du Bot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Serveurs du Bot</h1>
+    <ul id="server-list">
+        </ul>
+
+    <script>
+        async function fetchServers() {
+            const response = await fetch('/api/servers');
+            if (response.ok) {
+                const servers = await response.json();
+                const serverList = document.getElementById('server-list');
+                serverList.innerHTML = '';
+                servers.forEach(server => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <img src="${server.iconURL || 'https://via.placeholder.com/64'}" alt="Icône du serveur" width="32" height="32">
+                        <strong>${server.name}</strong> (ID: ${server.id}) - ${server.memberCount} membres
+                    `;
+                    serverList.appendChild(listItem);
+                });
+            } else {
+                const error = await response.text();
+                alert('Erreur lors de la récupération des serveurs: ' + error);
+                window.location.href = '/';
+            }
+        }
+
+        fetchServers();
+    </script>
+</body>
+</html>
